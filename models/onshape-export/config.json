@@ -1,0 +1,6 @@
+{
+    // Onshape URL of the assembly
+    "url": "https://cad.onshape.com/documents/84996c00d2235a14a8aa7698/w/026859207affdddff37a02aa/e/b5863298fcb9fdc6feac55d3",
+    // Output format
+    "output_format": "mujoco"
+}

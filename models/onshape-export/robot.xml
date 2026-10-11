@@ -1,0 +1,96 @@
+<?xml version="1.0" ?>
+<!-- Generated using onshape-to-robot -->
+<!-- Onshape https://cad.onshape.com/documents/84996c00d2235a14a8aa7698/w/026859207affdddff37a02aa/e/b5863298fcb9fdc6feac55d3 -->
+<mujoco model="onshape-export">
+  <compiler angle="radian" meshdir="assets" autolimits="true"/>
+  <default>
+    <default class="onshape-export">
+      <joint frictionloss="0.1" armature="0.005" damping="0.1"/>
+      <position kp="15" dampratio="1"/>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+      </default>
+      <default class="collision">
+        <geom group="3"/>
+      </default>
+    </default>
+  </default>
+  <worldbody>
+    <!-- Link base -->
+    <body name="base" pos="0 0 0" quat="1 0 0 0" childclass="onshape-export">
+      <inertial pos="0.00205173 -0.00207668 0.0053602" mass="0.502655" fullinertia="0.000569675 0.000569675 0.00100531 -0 4e-12 -1.7e-11"/>
+      <!-- Part base -->
+      <geom type="mesh" class="visual" pos="0.00205173 -0.00207668 0.0153602" quat="1 1.9758e-08 4.535e-09 -0" mesh="base" material="base_material"/>
+      <geom type="mesh" class="collision" pos="0.00205173 -0.00207668 0.0153602" quat="1 1.9758e-08 4.535e-09 -0" mesh="base" material="base_material"/>
+      <!-- Link base_shaft -->
+      <body name="base_shaft" pos="0.00205173 -0.00207668 0.0253602" quat="1.2804e-08 -0.789031 0.614353 1.5716e-08">
+        <!-- Joint from base to base_shaft -->
+        <joint axis="0 0 1" name="roll" type="hinge"/>
+        <inertial pos="-0 0 -0.031" mass="0.0889558" fullinertia="3.66207e-05 3.66207e-05 1.62505e-05 -0 0 0"/>
+        <!-- Part base_shaft -->
+        <geom type="mesh" class="visual" pos="0 0 0" quat="0 1 0 0" mesh="base_shaft" material="base_shaft_material"/>
+        <geom type="mesh" class="collision" pos="0 0 0" quat="0 1 0 0" mesh="base_shaft" material="base_shaft_material"/>
+        <!-- Link bottom_c -->
+        <body name="bottom_c" pos="0 0 -0.062" quat="1 0 0 0">
+          <!-- Joint from base_shaft to bottom_c -->
+          <!-- Joint is "fixed", skipping it -->
+          <inertial pos="2.4748e-08 6.185e-09 -0.0107878" mass="0.272369" fullinertia="0.000165471 0.000786606 0.000791729 -8e-10 4.68e-10 2.4e-11"/>
+          <!-- Part bottom_c -->
+          <geom type="mesh" class="visual" pos="-0 0 0.0751606" quat="0 -1 0 0" mesh="bottom_c" material="bottom_c_material"/>
+          <geom type="mesh" class="collision" pos="-0 0 0.0751606" quat="0 -1 0 0" mesh="bottom_c" material="bottom_c_material"/>
+          <!-- Link crosslink -->
+          <body name="crosslink" pos="0.0725 -0 -0.0369607" quat="0.55885 -0.433228 0.55885 -0.433228">
+            <!-- Joint from bottom_c to crosslink -->
+            <joint axis="0 0 1" name="yaw" type="hinge" range="-0.8627763737171708 0.3589541026788599"/>
+            <inertial pos="0.000186376 0 -0.0726864" mass="0.118444" fullinertia="0.000116415 0.000226216 0.000116415 -7.7e-11 -4.104e-09 -7.7e-11"/>
+            <!-- Part crosslink -->
+            <geom type="mesh" class="visual" pos="-0 -0.112121 -0.0725" quat="0.5 -0.5 -0.5 -0.5" mesh="crosslink" material="crosslink_material"/>
+            <geom type="mesh" class="collision" pos="-0 -0.112121 -0.0725" quat="0.5 -0.5 -0.5 -0.5" mesh="crosslink" material="crosslink_material"/>
+            <!-- Link top_c -->
+            <body name="top_c" pos="0.0732 -0 -0.0725" quat="0.210527 0.67504 0.210527 0.67504">
+              <!-- Joint from crosslink to top_c -->
+              <joint axis="0 0 1" name="pitch" type="hinge" range="-0.006238125200390021 1.2154923511956406"/>
+              <inertial pos="7.427e-09 -0.0335996 -0.0725" mass="0.351474" fullinertia="0.000905603 0.000870967 0.00026353 -4.3e-11 7.6e-10 8.72e-10"/>
+              <!-- Part top_c -->
+              <geom type="mesh" class="visual" pos="-0 0.112121 -0.0725" quat="0.707107 0.707107 -0 -0" mesh="top_c" material="top_c_material"/>
+              <geom type="mesh" class="collision" pos="-0 0.112121 -0.0725" quat="0.707107 0.707107 -0 -0" mesh="top_c" material="top_c_material"/>
+              <!-- Link camera -->
+              <body name="camera" pos="0 -0.0682213 -0.0725" quat="0.707107 -0.707107 0 0">
+                <!-- Joint from top_c to camera -->
+                <!-- Joint is "fixed", skipping it -->
+                <inertial pos="0 -0 -0.00345" mass="0.0077477" fullinertia="5.8457e-07 5.8457e-07 1.10766e-06 -0 -0 -0"/>
+                <!-- Part camera -->
+                <geom type="mesh" class="visual" pos="0 0 0.180343" quat="0 1 -0 -0" mesh="camera" material="camera_material"/>
+                <geom type="mesh" class="collision" pos="0 0 0.180343" quat="0 1 -0 -0" mesh="camera" material="camera_material"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <asset>
+    <mesh file="base_shaft.stl"/>
+    <mesh file="camera.stl"/>
+    <mesh file="top_c.stl"/>
+    <mesh file="bottom_c.stl"/>
+    <mesh file="base.stl"/>
+    <mesh file="crosslink.stl"/>
+    <material name="base_material" rgba="0.231373 0.380392 0.705882 1"/>
+    <material name="base_shaft_material" rgba="0.262745 0.282353 0.301961 1"/>
+    <material name="bottom_c_material" rgba="0.231373 0.380392 0.705882 1"/>
+    <material name="crosslink_material" rgba="0.34902 0.376471 0.4 1"/>
+    <material name="top_c_material" rgba="0.231373 0.380392 0.705882 1"/>
+    <material name="camera_material" rgba="0.972549 0.529412 0.00392157 1"/>
+  </asset>
+  <actuator>
+    <position class="onshape-export" name="roll" joint="roll"/>
+    <position class="onshape-export" name="yaw" joint="yaw" inheritrange="1"/>
+    <position class="onshape-export" name="pitch" joint="pitch" inheritrange="1"/>
+  </actuator>
+  <contact>
+    <!-- Exported collision meshes for these nested gimbal rings overlap at rest. -->
+    <exclude body1="bottom_c" body2="top_c"/>
+  </contact>
+  <equality/>
+</mujoco>

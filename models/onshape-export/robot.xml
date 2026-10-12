@@ -17,7 +17,7 @@
   </default>
   <worldbody>
     <!-- Link base -->
-    <body name="base" pos="0 0 0" quat="1 0 0 0" childclass="onshape-export">
+    <body name="base" pos="0 0 3" quat="0 1 0 0" childclass="onshape-export">
       <inertial pos="0.00205173 -0.00207668 0.0053602" mass="0.502655" fullinertia="0.000569675 0.000569675 0.00100531 -0 4e-12 -1.7e-11"/>
       <!-- Part base -->
       <geom type="mesh" class="visual" pos="0.00205173 -0.00207668 0.0153602" quat="1 1.9758e-08 4.535e-09 -0" mesh="base" material="base_material"/>
@@ -56,6 +56,7 @@
               <geom type="mesh" class="collision" pos="-0 0.112121 -0.0725" quat="0.707107 0.707107 -0 -0" mesh="top_c" material="top_c_material"/>
               <!-- Link camera -->
               <body name="camera" pos="0 -0.0682213 -0.0725" quat="0.707107 -0.707107 0 0">
+                <camera name="gimbal_camera" pos="0 0 0" quat="1 0 0 0" fovy="60"/>
                 <!-- Joint from top_c to camera -->
                 <!-- Joint is "fixed", skipping it -->
                 <inertial pos="0 -0 -0.00345" mass="0.0077477" fullinertia="5.8457e-07 5.8457e-07 1.10766e-06 -0 -0 -0"/>

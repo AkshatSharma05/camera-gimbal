@@ -1,0 +1,3 @@
+.venv/bin/onshape-to-robot models/onshape-export
+
+mjpython .venv/bin/onshape-to-robot-mujoco models/onshape-export

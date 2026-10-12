@@ -18,7 +18,27 @@
     </asset>
 
     <worldbody>
-        <light pos="0 0 3.5" dir="0 0 -1" directional="true" />
+        <light pos="0 -1 2.8" dir="0 0 -1" directional="true" diffuse="0.8 0.8 0.8" />
+        <light pos="0 0 2.4" diffuse="0.35 0.35 0.35" />
+
         <geom name="floor" size="0 0 0.05" pos="0 0 0" type="plane" material="groundplane" />
+
+        <!-- Visual-only room shell: 5 m wide, 5 m deep, 3 m high. -->
+        <geom name="wall_left" type="box" pos="-2.5 0 1.5" size="0.04 2.5 1.5"
+            rgba="0.72 0.76 0.8 1" contype="0" conaffinity="0" />
+        <geom name="wall_right" type="box" pos="2.5 0 1.5" size="0.04 2.5 1.5"
+            rgba="0.72 0.76 0.8 1" contype="0" conaffinity="0" />
+        <geom name="wall_back" type="box" pos="0 2.5 1.5" size="2.5 0.04 1.5"
+            rgba="0.66 0.71 0.76 1" contype="0" conaffinity="0" />
+        <geom name="wall_front" type="box" pos="0 -2.5 1.5" size="2.5 0.04 1.5"
+            rgba="0.66 0.71 0.76 1" contype="0" conaffinity="0" />
+        <geom name="ceiling" type="box" pos="0 0 3.04" size="2.5 2.5 0.04"
+            rgba="0.86 0.88 0.9 1" contype="0" conaffinity="0" />
+
+        <body name="mocap_target" mocap="true" pos="-0.58 -0.86 1.5">
+            <geom name="target_marker" type="sphere" size="0.08" rgba="1 0.15 0.05 1"
+                contype="0" conaffinity="0" />
+            <site name="target_center" size="0.025" rgba="1 1 0 1" />
+        </body>
     </worldbody>
 </mujoco>

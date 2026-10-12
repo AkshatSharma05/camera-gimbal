@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 import cv2
 import numpy as np
+from control_loop import VisionTargetController
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SCENE_PATH = PROJECT_ROOT / "models" / "onshape-export" / "scene.xml"
@@ -15,6 +16,7 @@ IMAGE_HEIGHT = 480
 
 model = mujoco.MjModel.from_xml_path(str(SCENE_PATH))
 data = mujoco.MjData(model)
+mujoco.mj_forward(model, data)
 
 renderer = mujoco.Renderer(model, height=IMAGE_HEIGHT, width=IMAGE_WIDTH)
 
@@ -22,28 +24,32 @@ camera_id = mujoco.mj_name2id(
     model, mujoco.mjtObj.mjOBJ_CAMERA, "gimbal_camera"
 )
 
-# Find the mocap target's index
-target_body_id = mujoco.mj_name2id(
-    model, mujoco.mjtObj.mjOBJ_BODY, "mocap_target"
-)
-mocap_id = model.body_mocapid[target_body_id]
+controller = VisionTargetController(IMAGE_WIDTH, IMAGE_HEIGHT)
+mocap_id = model.body_mocapid[
+    mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "mocap_target")
+]
+if mocap_id < 0:
+    raise ValueError("mocap_target must be a mocap body")
 
-if mocap_id == -1:
-    raise ValueError("mocap_target is not a mocap body")
+actuator_ids = {
+    name: mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR, name)
+    for name in ("yaw", "pitch")
+}
 
-# Random waypoint generator
 rng = np.random.default_rng()
+
 
 def random_waypoint():
     return np.array([
-        rng.uniform(-2.2, 2.2),  # x
-        rng.uniform(-2.2, 2.2),  # y
-        rng.uniform(0.4, 2.5),   # z
+        rng.uniform(-2.2, 2.2),
+        rng.uniform(-2.2, 2.2),
+        rng.uniform(0.4, 1.5),
     ])
+
 
 target_position = data.mocap_pos[mocap_id].copy()
 waypoint = random_waypoint()
-target_speed = 0.8  # metres per second
+target_speed = 0.8
 
 display = subprocess.Popen(
     [
@@ -63,30 +69,35 @@ try:
                     raise subprocess.CalledProcessError(display.returncode, display.args)
                 break
 
-            # Move toward the current waypoint
             delta = waypoint - target_position
             distance = np.linalg.norm(delta)
-
             if distance < 0.05:
                 waypoint = random_waypoint()
             else:
-                step_distance = min(
-                    target_speed * model.opt.timestep,
-                    distance,
-                )
+                step_distance = min(target_speed * model.opt.timestep, distance)
                 target_position += (delta / distance) * step_distance
 
-            # Update the mocap body's world position
             data.mocap_pos[mocap_id] = target_position
-            
-            mujoco.mj_step(model, data)
+
+            mujoco.mj_forward(model, data)
 
             renderer.update_scene(data, camera=camera_id)
-            image = renderer.render()
+            image = cv2.cvtColor(renderer.render(), cv2.COLOR_RGB2BGR)
+
+            commands = controller.update(image, model.opt.timestep)
+            if commands is not None:
+                for joint_name, actuator_id in actuator_ids.items():
+                    desired = data.ctrl[actuator_id] + commands[joint_name] * model.opt.timestep
+                    if model.actuator_ctrllimited[actuator_id]:
+                        lower, upper = model.actuator_ctrlrange[actuator_id]
+                        desired = np.clip(desired, lower, upper)
+                    data.ctrl[actuator_id] = desired
+
+            mujoco.mj_step(model, data)
             viewer.sync()
 
             try:
-                display.stdin.write(cv2.cvtColor(image, cv2.COLOR_RGB2BGR).tobytes())
+                display.stdin.write(image.tobytes())
                 display.stdin.flush()
             except BrokenPipeError:
                 if display.poll() is None:
